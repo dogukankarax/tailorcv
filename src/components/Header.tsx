@@ -12,6 +12,9 @@ export default function Header() {
       <Link to="/applications/new" activeProps={{ className: 'font-bold' }}>
         New Application
       </Link>
+      <Link to="/github" activeProps={{ className: 'font-bold' }}>
+        GitHub
+      </Link>
     </nav>
   )
 }

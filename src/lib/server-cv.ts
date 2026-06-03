@@ -39,3 +39,39 @@ export const saveMyCv = createServerFn({ method: 'POST' })
     if (!row) throw new Error('Failed to save master CV')
     return row
   })
+
+export const appendToMasterCv = createServerFn({
+  method: 'POST',
+})
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        text: z.string().min(1),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    const request = getRequest()
+    const session = await auth.api.getSession({ headers: request.headers })
+    if (!session) throw new Error('Unauthorized')
+
+    const userId = session.user.id
+    const cv = await db.query.masterCv.findFirst({
+      where: eq(masterCv.userId, userId),
+    })
+
+    const newContent = cv ? cv.content + '\n\n' + data.text : data.text
+
+    const rows = await db
+      .insert(masterCv)
+      .values({ userId, content: newContent })
+      .onConflictDoUpdate({
+        target: masterCv.userId,
+        set: { content: newContent },
+      })
+      .returning()
+
+    const row = rows[0]
+    if (!row) throw new Error('Failed to update master CV')
+    return row
+  })

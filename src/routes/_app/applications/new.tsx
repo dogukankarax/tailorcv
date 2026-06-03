@@ -1,4 +1,3 @@
-import TailoredCvView from '#/components/TailoredCvView'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
@@ -6,7 +5,7 @@ import { Textarea } from '#/components/ui/textarea'
 
 import { createApplication } from '#/lib/server-ai'
 import { useMutation } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
 export const Route = createFileRoute('/_app/applications/new')({
@@ -14,12 +13,17 @@ export const Route = createFileRoute('/_app/applications/new')({
 })
 
 function New() {
+  const navigate = useNavigate()
+
   const mutation = useMutation({
     mutationFn: (input: {
       jobTitle: string
       company: string
       jobDescription: string
     }) => createApplication({ data: input }),
+    onSuccess: (result) => {
+      navigate({ to: '/applications/$id', params: { id: result.id } })
+    },
   })
 
   const [jobTitle, setJobTitle] = useState('')
@@ -67,28 +71,6 @@ function New() {
       </Button>
       {mutation.isError && (
         <p className="text-red-500">{mutation.error.message}</p>
-      )}
-
-      {mutation.isSuccess && (
-        <div className="space-y-6 border-t pt-6">
-          <h2>Match Score: {mutation.data.matchScore}/100</h2>
-          <h3 className="text-lg font-semibold">Strengths</h3>
-          <ul className="list-disc pl-6">
-            {mutation.data.strengths.map((s, i) => (
-              <li key={i}>{s}</li>
-            ))}
-          </ul>
-          <h3 className="text-lg font-semibold">Gaps</h3>
-          <ul className="list-disc pl-6">
-            {mutation.data.gaps.map((g, i) => (
-              <li key={i}>{g}</li>
-            ))}
-          </ul>
-          <TailoredCvView {...mutation.data.tailoredCv} />
-          <pre className="whitespace-pre-wrap rounded border p-4 text-sm">
-            {mutation.data.coverLetter}
-          </pre>
-        </div>
       )}
     </div>
   )

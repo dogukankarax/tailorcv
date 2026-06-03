@@ -1,16 +1,14 @@
+import { db } from '#/db'
+import { application, masterCv } from '#/db/schema'
+import { auth } from '#/lib/auth'
+import { ai } from '#/lib/gemini'
 import { logger } from '#/lib/logger'
 import { TailoredCvSchema } from '#/schemas/tailored-cv'
-import { GoogleGenAI, Type } from '@google/genai'
+import { Type } from '@google/genai'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequest } from '@tanstack/react-start/server'
 import { and, eq, gte } from 'drizzle-orm'
 import { z } from 'zod'
-
-import { db } from '#/db'
-import { application, masterCv } from '#/db/schema'
-import { auth } from '#/lib/auth'
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! })
 
 // Input payload from the client (form data)
 const inputSchema = z.object({

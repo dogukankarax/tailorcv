@@ -13,6 +13,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppGithubRouteImport } from './routes/_app/github'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppApplicationsIndexRouteImport } from './routes/_app/applications/index'
 import { Route as ApiPdfIdRouteImport } from './routes/api/pdf/$id'
@@ -38,6 +39,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppGithubRoute = AppGithubRouteImport.update({
+  id: '/github',
+  path: '/github',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/dashboard': typeof AppDashboardRoute
+  '/github': typeof AppGithubRoute
   '/applications/$id': typeof AppApplicationsIdRoute
   '/applications/new': typeof AppApplicationsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/dashboard': typeof AppDashboardRoute
+  '/github': typeof AppGithubRoute
   '/applications/$id': typeof AppApplicationsIdRoute
   '/applications/new': typeof AppApplicationsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/github': typeof AppGithubRoute
   '/_app/applications/$id': typeof AppApplicationsIdRoute
   '/_app/applications/new': typeof AppApplicationsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -112,6 +121,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/dashboard'
+    | '/github'
     | '/applications/$id'
     | '/applications/new'
     | '/api/auth/$'
@@ -123,6 +133,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/dashboard'
+    | '/github'
     | '/applications/$id'
     | '/applications/new'
     | '/api/auth/$'
@@ -135,6 +146,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/_app/dashboard'
+    | '/_app/github'
     | '/_app/applications/$id'
     | '/_app/applications/new'
     | '/api/auth/$'
@@ -180,6 +192,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_app/github': {
+      id: '/_app/github'
+      path: '/github'
+      fullPath: '/github'
+      preLoaderRoute: typeof AppGithubRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/dashboard': {
       id: '/_app/dashboard'
@@ -228,6 +247,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppDashboardRoute: typeof AppDashboardRoute
+  AppGithubRoute: typeof AppGithubRoute
   AppApplicationsIdRoute: typeof AppApplicationsIdRoute
   AppApplicationsNewRoute: typeof AppApplicationsNewRoute
   AppApplicationsIndexRoute: typeof AppApplicationsIndexRoute
@@ -235,6 +255,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppDashboardRoute: AppDashboardRoute,
+  AppGithubRoute: AppGithubRoute,
   AppApplicationsIdRoute: AppApplicationsIdRoute,
   AppApplicationsNewRoute: AppApplicationsNewRoute,
   AppApplicationsIndexRoute: AppApplicationsIndexRoute,

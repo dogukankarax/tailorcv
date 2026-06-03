@@ -8,5 +8,5 @@
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true
   },
-  "cSpell.words": ["Fraunces", "oklab", "oklch", "rgba", "grayscale"]
+  "cSpell.words": ["Fraunces", "genai", "grayscale", "oklab", "oklch", "rgba"]
 }
