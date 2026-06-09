@@ -1,16 +1,12 @@
-import { TanStackDevtools } from '@tanstack/react-devtools'
 import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import BetterAuthHeader from '../integrations/better-auth/header-user'
-
-import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import appCss from '../styles.css?url'
 
+import { Toaster } from '#/components/ui/sonner'
 import type { QueryClient } from '@tanstack/react-query'
 
 interface MyRouterContext {
@@ -43,27 +39,18 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':matchMedia('(prefers-color-scheme:dark)').matches;if(d)document.documentElement.classList.add('dark')}catch(e){}})()`,
+          }}
+        />
         <HeadContent />
       </head>
       <body>
-        <header className="absolute top-4 right-4 z-50">
-          <BetterAuthHeader />
-        </header>
         {children}
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-            TanStackQueryDevtools,
-          ]}
-        />
+        <Toaster />
         <Scripts />
       </body>
     </html>

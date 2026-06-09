@@ -10,12 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppGithubRouteImport } from './routes/_app/github'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppApplicationsIndexRouteImport } from './routes/_app/applications/index'
+import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
 import { Route as ApiPdfIdRouteImport } from './routes/api/pdf/$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppApplicationsNewRouteImport } from './routes/_app/applications/new'
@@ -24,6 +26,11 @@ import { Route as AppApplicationsIdRouteImport } from './routes/_app/application
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -55,6 +62,11 @@ const AppApplicationsIndexRoute = AppApplicationsIndexRouteImport.update({
   path: '/applications/',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
+  id: '/api/stripe/webhook',
+  path: '/api/stripe/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPdfIdRoute = ApiPdfIdRouteImport.update({
   id: '/api/pdf/$id',
   path: '/api/pdf/$id',
@@ -79,6 +91,7 @@ const AppApplicationsIdRoute = AppApplicationsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/register': typeof RegisterRoute
   '/dashboard': typeof AppDashboardRoute
   '/github': typeof AppGithubRoute
@@ -86,11 +99,13 @@ export interface FileRoutesByFullPath {
   '/applications/new': typeof AppApplicationsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/pdf/$id': typeof ApiPdfIdRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/applications/': typeof AppApplicationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/register': typeof RegisterRoute
   '/dashboard': typeof AppDashboardRoute
   '/github': typeof AppGithubRoute
@@ -98,6 +113,7 @@ export interface FileRoutesByTo {
   '/applications/new': typeof AppApplicationsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/pdf/$id': typeof ApiPdfIdRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/applications': typeof AppApplicationsIndexRoute
 }
 export interface FileRoutesById {
@@ -105,6 +121,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/register': typeof RegisterRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/github': typeof AppGithubRoute
@@ -112,6 +129,7 @@ export interface FileRoutesById {
   '/_app/applications/new': typeof AppApplicationsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/pdf/$id': typeof ApiPdfIdRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/_app/applications/': typeof AppApplicationsIndexRoute
 }
 export interface FileRouteTypes {
@@ -119,6 +137,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/pricing'
     | '/register'
     | '/dashboard'
     | '/github'
@@ -126,11 +145,13 @@ export interface FileRouteTypes {
     | '/applications/new'
     | '/api/auth/$'
     | '/api/pdf/$id'
+    | '/api/stripe/webhook'
     | '/applications/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
+    | '/pricing'
     | '/register'
     | '/dashboard'
     | '/github'
@@ -138,12 +159,14 @@ export interface FileRouteTypes {
     | '/applications/new'
     | '/api/auth/$'
     | '/api/pdf/$id'
+    | '/api/stripe/webhook'
     | '/applications'
   id:
     | '__root__'
     | '/'
     | '/_app'
     | '/login'
+    | '/pricing'
     | '/register'
     | '/_app/dashboard'
     | '/_app/github'
@@ -151,6 +174,7 @@ export interface FileRouteTypes {
     | '/_app/applications/new'
     | '/api/auth/$'
     | '/api/pdf/$id'
+    | '/api/stripe/webhook'
     | '/_app/applications/'
   fileRoutesById: FileRoutesById
 }
@@ -158,9 +182,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
+  PricingRoute: typeof PricingRoute
   RegisterRoute: typeof RegisterRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiPdfIdRoute: typeof ApiPdfIdRoute
+  ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -170,6 +196,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -213,6 +246,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/applications/'
       preLoaderRoute: typeof AppApplicationsIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/api/stripe/webhook': {
+      id: '/api/stripe/webhook'
+      path: '/api/stripe/webhook'
+      fullPath: '/api/stripe/webhook'
+      preLoaderRoute: typeof ApiStripeWebhookRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/pdf/$id': {
       id: '/api/pdf/$id'
@@ -267,9 +307,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
+  PricingRoute: PricingRoute,
   RegisterRoute: RegisterRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiPdfIdRoute: ApiPdfIdRoute,
+  ApiStripeWebhookRoute: ApiStripeWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

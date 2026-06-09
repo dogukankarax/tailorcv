@@ -1,16 +1,14 @@
 import { db } from '#/db'
 import { masterCv } from '#/db/schema'
-import { auth } from '#/lib/auth'
+import { requireUser } from '#/lib/require-user'
 import { createServerFn } from '@tanstack/react-start'
-import { getRequest } from '@tanstack/react-start/server'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
 export const getMyCv = createServerFn().handler(async () => {
-  const request = getRequest()
-  const session = await auth.api.getSession({ headers: request.headers })
-  if (!session) throw new Error('Unauthorized')
-  const userId = session.user.id
+  const currentUser = await requireUser()
+  const userId = currentUser.id
+
   const row = await db.query.masterCv.findFirst({
     where: eq(masterCv.userId, userId),
   })
@@ -24,11 +22,9 @@ export const saveMyCv = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     const { content } = data
-    const request = getRequest()
-    const session = await auth.api.getSession({ headers: request.headers })
-    if (!session) throw new Error('Unauthorized')
+    const currentUser = await requireUser()
+    const userId = currentUser.id
 
-    const userId = session.user.id
     const rows = await db
       .insert(masterCv)
       .values({ userId, content })
@@ -51,11 +47,9 @@ export const appendToMasterCv = createServerFn({
       .parse(data),
   )
   .handler(async ({ data }) => {
-    const request = getRequest()
-    const session = await auth.api.getSession({ headers: request.headers })
-    if (!session) throw new Error('Unauthorized')
+    const currentUser = await requireUser()
+    const userId = currentUser.id
 
-    const userId = session.user.id
     const cv = await db.query.masterCv.findFirst({
       where: eq(masterCv.userId, userId),
     })

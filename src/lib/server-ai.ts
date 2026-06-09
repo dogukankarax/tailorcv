@@ -1,12 +1,11 @@
 import { db } from '#/db'
-import { application, masterCv } from '#/db/schema'
-import { auth } from '#/lib/auth'
+import { application, masterCv, user } from '#/db/schema'
 import { ai } from '#/lib/gemini'
 import { logger } from '#/lib/logger'
+import { requireUser } from '#/lib/require-user'
 import { TailoredCvSchema } from '#/schemas/tailored-cv'
 import { Type } from '@google/genai'
 import { createServerFn } from '@tanstack/react-start'
-import { getRequest } from '@tanstack/react-start/server'
 import { and, eq, gte } from 'drizzle-orm'
 import { z } from 'zod'
 
@@ -88,11 +87,9 @@ const geminiResponseSchema = {
 export const createApplication = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => inputSchema.parse(data))
   .handler(async ({ data }) => {
-    // 1. Auth
-    const request = getRequest()
-    const session = await auth.api.getSession({ headers: request.headers })
-    if (!session) throw new Error('Unauthorized')
-    const userId = session.user.id
+    const currentUser = await requireUser()
+    const userId = currentUser.id
+    const dbUser = await db.query.user.findFirst({ where: eq(user.id, userId) })
 
     // 2. Fetch master CV
     const cv = await db.query.masterCv.findFirst({
@@ -100,23 +97,25 @@ export const createApplication = createServerFn({ method: 'POST' })
     })
     if (!cv) throw new Error('Please set up your master CV first')
 
-    const DAILY_LIMIT = 3
+    if (dbUser?.plan !== 'pro') {
+      const DAILY_LIMIT = 3
 
-    const todayStart = new Date()
-    todayStart.setHours(0, 0, 0, 0)
+      const todayStart = new Date()
+      todayStart.setHours(0, 0, 0, 0)
 
-    const count = await db.$count(
-      application,
-      and(
-        eq(application.userId, userId),
-        gte(application.createdAt, todayStart),
-      ),
-    )
-
-    if (count >= DAILY_LIMIT)
-      throw new Error(
-        `Daily limit reached (${DAILY_LIMIT} per day). Please try again tomorrow.`,
+      const count = await db.$count(
+        application,
+        and(
+          eq(application.userId, userId),
+          gte(application.createdAt, todayStart),
+        ),
       )
+
+      if (count >= DAILY_LIMIT)
+        throw new Error(
+          `Daily limit reached (${DAILY_LIMIT} per day). Upgrade to Pro for unlimited.`,
+        )
+    }
 
     // 3. Prompt
     const prompt = `
@@ -151,7 +150,7 @@ ${data.jobDescription}`
     let response
     try {
       response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3.5-flash',
         contents: prompt,
         config: {
           responseMimeType: 'application/json',

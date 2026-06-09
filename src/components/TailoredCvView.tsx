@@ -8,7 +8,7 @@ export default function TailoredCvView({
   education,
 }: TailoredCv) {
   return (
-    <div className="rounded border p-4 text-sm">
+    <div className="text-sm">
       <p>{summary}</p>
       {skills.length > 0 && (
         <>
@@ -28,7 +28,7 @@ export default function TailoredCvView({
               <p className="font-medium">
                 {exp.role} — {exp.organization}
               </p>
-              <p className="text-xs text-neutral-500">{exp.period}</p>
+              <p className="text-xs text-muted-foreground">{exp.period}</p>
               <ul className="list-disc pl-6">
                 {exp.highlights.map((h, j) => (
                   <li key={j}>{h}</li>
@@ -60,7 +60,7 @@ export default function TailoredCvView({
           {education.map((e, i) => (
             <div key={i} className="mt-2">
               <p className="font-medium">{e.degree}</p>
-              <p className="text-xs text-neutral-500">
+              <p className="text-xs text-muted-foreground">
                 {e.institution} · {e.period}
               </p>
             </div>

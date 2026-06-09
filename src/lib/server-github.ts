@@ -1,8 +1,8 @@
-import { auth } from '#/lib/auth'
+import { env } from '#/lib/env'
 import { ai } from '#/lib/gemini'
 import { logger } from '#/lib/logger'
+import { requireUser } from '#/lib/require-user'
 import { createServerFn } from '@tanstack/react-start'
-import { getRequest } from '@tanstack/react-start/server'
 import { z } from 'zod'
 
 export type GithubRepo = {
@@ -29,23 +29,30 @@ const generateInputSchema = z.object({
 })
 
 const inputSchema = z.object({
-  username: z.string().min(1, 'GitHub username is required'),
+  username: z
+    .string()
+    .trim()
+    .min(1, 'GitHub username is required')
+    .max(39, 'GitHub username is too long')
+    .regex(
+      /^(?!-)(?!.*--)[A-Za-z0-9-]+(?<!-)$/,
+      'Enter a valid GitHub username',
+    ),
 })
 
 export const getGithubRepos = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => inputSchema.parse(data))
   .handler(async ({ data }) => {
-    const request = getRequest()
-    const session = await auth.api.getSession({ headers: request.headers })
-    if (!session) throw new Error('Unauthorized')
+    await requireUser()
+    const username = encodeURIComponent(data.username)
 
     const res = await fetch(
-      `https://api.github.com/users/${data.username}/repos?sort=updated&per_page=100`,
+      `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`,
       {
         headers: {
           Accept: 'application/vnd.github+json',
-          ...(process.env.GITHUB_TOKEN && {
-            Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          ...(env.GITHUB_TOKEN && {
+            Authorization: `Bearer ${env.GITHUB_TOKEN}`,
           }),
         },
       },
@@ -83,9 +90,7 @@ export const getGithubRepos = createServerFn({ method: 'POST' })
 export const generateProjectsFromRepos = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => generateInputSchema.parse(data))
   .handler(async ({ data }) => {
-    const request = getRequest()
-    const session = await auth.api.getSession({ headers: request.headers })
-    if (!session) throw new Error('Unauthorized')
+    await requireUser()
 
     const repoList = data.repos
       .map(
