@@ -1,16 +1,22 @@
 # TailorCV
 
-Tailor your CV to a specific job in seconds. Paste a job posting, get a match score, a reordered CV, and a cover letter — grounded in your real GitHub projects.
+TailorCV helps you adapt a master CV for a specific job post. It gives you a match score, points out strengths and gaps, then creates a tailored CV and cover letter based on your own CV and GitHub projects.
 
 Live: https://tailorcv-jvnn.onrender.com
 
 ## What it does
 
 - Write a master CV once, in markdown.
-- For any job posting, get a 0–100 match score, the strengths that line up, and the gaps to work on.
+- Paste a job posting and get a 0-100 match score, matching strengths, and gaps to improve.
 - Get a tailored CV (reordered and emphasized for that role) and a cover letter, both exportable to PDF.
-- Import your public GitHub repos and turn real projects into CV bullet points.
+- Import public GitHub repos and turn real projects into CV bullet points.
 - Free plan: 3 tailored CVs per day. Pro plan: unlimited, via Stripe.
+
+## Screenshots
+
+![Landing page](docs/landing.png)
+![Tailored application with match score](docs/application.png)
+![Exported PDF](docs/pdf.png)
 
 ## Stack
 
@@ -18,9 +24,9 @@ TanStack Start (SSR) with React 19, TanStack Router / Query / Form, Tailwind 4 a
 
 ## How it works
 
-The AI step runs server-side as a TanStack Start server function. It sends the master CV and the job description to Gemini with a fixed response schema, then validates the result with Zod before saving it. That same structured data renders both on screen and into the PDF, so there is one source of truth instead of parsing markdown twice.
+The AI part runs on the server with a TanStack Start server function. It sends the master CV and job post to Gemini with a fixed response schema, then validates the response with Zod before saving it. The saved structured result is used for both the screen view and the PDF export.
 
-GitHub repos are pulled from the public API and turned into bullet points the user reviews and edits before they are added to the master CV. Upgrades go through Stripe Checkout; a webhook flips the user's plan to pro on payment and back to free on cancellation.
+GitHub repos are pulled from the public API and turned into draft bullet points. The user can review and edit them before adding them to the master CV. Upgrades go through Stripe Checkout, and the webhook updates the user's plan after payment or cancellation.
 
 ## Run locally
 
@@ -59,6 +65,6 @@ pnpm test
 
 ## Notes
 
-- The AI is constrained to a schema, validated with Zod, and told not to invent anything, so the output stays grounded in what the user actually wrote.
-- The daily limit is a per-user row count in Postgres rather than Redis — fine at this scale and one less service to run.
-- Deployed in a US region because the Gemini free API rejects requests from some datacenter locations.
+- Gemini returns structured data, and the app validates it with Zod before saving.
+- The daily free limit is stored in Postgres. I avoided adding Redis because the project does not need it yet.
+- The app is deployed in a US region because Gemini free API access can fail from some datacenter regions.

@@ -34,7 +34,7 @@ export function PublicHeader() {
             </Button>
           ) : (
             <>
-              <Button asChild size="sm">
+              <Button asChild size="sm" className="hidden sm:inline-flex">
                 <Link to="/register">Get started free</Link>
               </Button>
               <Button asChild variant="outline" size="sm">

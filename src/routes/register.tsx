@@ -66,7 +66,7 @@ function RegisterPage() {
         <CardHeader>
           <CardTitle>Create your account</CardTitle>
           <CardDescription>
-            Enter your details below to create your account
+            Save your master CV and start tailoring applications.
           </CardDescription>
           <CardAction>
             <Link

@@ -60,13 +60,13 @@ function RouteComponent() {
   )
 
   return (
-    <div className="mx-auto max-w-2xl p-8 space-y-6">
+    <div className="mx-auto max-w-2xl p-4 sm:p-8 space-y-6">
       <h1 className="text-3xl font-display font-semibold">
         Import from GitHub
       </h1>
       <Card>
         <CardHeader>
-          <CardTitle>Connect GitHub</CardTitle>
+          <CardTitle>Find repositories</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <div className="flex gap-2">
@@ -106,7 +106,7 @@ function RouteComponent() {
       {mutation.isSuccess && (
         <Card>
           <CardHeader>
-            <CardTitle>Select repositories to import</CardTitle>
+            <CardTitle>Select repositories</CardTitle>
           </CardHeader>
           <CardContent className="max-h-80 overflow-y-auto">
             <ul className="space-y-2">
@@ -149,7 +149,7 @@ function RouteComponent() {
       {generateMutation.isSuccess && (
         <Card>
           <CardHeader>
-            <CardTitle>Generated Projects</CardTitle>
+            <CardTitle>Draft project bullets</CardTitle>
             <CardDescription>
               Review and edit before adding to your master CV.
             </CardDescription>

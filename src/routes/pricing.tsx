@@ -12,7 +12,11 @@ import {
   CardTitle,
 } from '#/components/ui/card'
 import { authClient } from '#/lib/auth-client'
-import { createCheckoutSession, getMyPlan } from '#/lib/server-stripe'
+import {
+  createCheckoutSession,
+  createPortalSession,
+  getMyPlan,
+} from '#/lib/server-stripe'
 
 export const Route = createFileRoute('/pricing')({
   component: Pricing,
@@ -27,6 +31,13 @@ function Pricing() {
       window.location.href = url
     },
   })
+
+  const portalMutation = useMutation({
+    mutationFn: () => createPortalSession(),
+    onSuccess: ({ url }) => {
+      window.location.href = url
+    },
+  })
   const { data: plan, isLoading: planLoading } = useQuery({
     queryKey: ['plan'],
     queryFn: () => getMyPlan(),
@@ -36,12 +47,12 @@ function Pricing() {
   return (
     <>
       <PublicHeader />
-      <div className="mx-auto max-w-3xl px-6 py-20">
+      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-20">
         <h1 className="text-center font-display text-4xl font-semibold">
           Pricing
         </h1>
         <p className="mt-3 text-center text-muted-foreground">
-          Start free. Upgrade when you need more.
+          Start with the free daily limit. Upgrade if you need more runs.
         </p>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2">
@@ -84,8 +95,12 @@ function Pricing() {
                   Loading…
                 </Button>
               ) : plan === 'pro' ? (
-                <Button className="w-full" disabled>
-                  Current plan
+                <Button
+                  className="w-full"
+                  disabled={portalMutation.isPending}
+                  onClick={() => portalMutation.mutate()}
+                >
+                  Manage subscription
                 </Button>
               ) : (
                 <Button

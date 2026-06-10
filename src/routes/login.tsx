@@ -62,16 +62,16 @@ function LoginPage() {
       </div>
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>Sign in</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Use the email and password you registered with.
           </CardDescription>
           <CardAction>
             <Link
               to="/register"
               className="text-sm text-muted-foreground hover:text-foreground"
             >
-              Sign Up
+              Create account
             </Link>
           </CardAction>
         </CardHeader>

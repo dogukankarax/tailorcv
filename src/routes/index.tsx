@@ -19,22 +19,23 @@ function Home() {
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-150 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(99,102,241,0.22),transparent_70%)]"
       />
 
-      <section className="mx-auto max-w-3xl px-6 pt-28 pb-20 text-center">
+      <section className="mx-auto max-w-3xl px-4 pt-20 pb-16 sm:px-6 sm:pt-28 sm:pb-20 text-center">
         <span className="inline-block rounded-full border border-border bg-card/60 px-3 py-1 text-xs font-medium text-muted-foreground">
-          AI-powered CV tailoring
+          Built from your real CV and GitHub
         </span>
 
-        <h1 className="mt-6 font-display text-6xl font-semibold leading-[1.05] tracking-tight text-foreground">
-          Tailor your CV to <span className="text-indigo-400">any job</span> in
-          seconds
+        <h1 className="mt-6 font-display text-4xl sm:text-6xl font-semibold leading-[1.05] tracking-tight text-foreground">
+          A CV that fits <span className="text-indigo-400">every job</span> you
+          apply to
         </h1>
 
         <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-          Paste a job description and get a match score, a reordered CV, and a
-          cover letter — grounded in your real GitHub projects.
+          Paste a job post and get a match score, your strengths and gaps, a
+          reordered CV, and a cover letter — written only from what you actually
+          did.
         </p>
 
-        <div className="mt-10 flex items-center justify-center gap-3">
+        <div className="mt-10 flex items-center justify-center gap-3 flex-wrap">
           {isPending ? (
             <>
               <Skeleton className="h-10 w-60" />
@@ -56,20 +57,20 @@ function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-6 pb-28">
+      <section className="mx-auto max-w-4xl px-4 pb-20 sm:px-6 sm:pb-28">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           {[
             {
               title: 'Match score',
-              body: 'See how well you fit, with strengths and gaps surfaced instantly.',
+              body: 'A 0-100 score with the strengths that line up and the gaps to close.',
             },
             {
-              title: 'Tailored output',
-              body: 'A reordered CV and cover letter, exported to a clean PDF.',
+              title: 'Tailored CV & cover letter',
+              body: 'Your experience reordered for the role, exported to a clean PDF.',
             },
             {
-              title: 'GitHub-powered',
-              body: 'Turn your real repositories into polished CV bullet points.',
+              title: 'Grounded in GitHub',
+              body: 'Pull in your public repos so the CV reflects real work, not filler.',
             },
           ].map((f) => (
             <div

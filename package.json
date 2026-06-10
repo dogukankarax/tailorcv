@@ -1,6 +1,9 @@
 {
   "name": "tailorcv",
   "private": true,
+  "description": "Tailor a master CV to any job posting — match score, tailored CV, and cover letter grounded in your real GitHub projects",
+  "author": "Dogukan Kara",
+  "license": "MIT",
   "packageManager": "pnpm@11.1.3",
   "type": "module",
   "imports": {

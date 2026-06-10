@@ -1,3 +1,4 @@
+import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import {
   Card,
@@ -10,6 +11,7 @@ import {
 import { Skeleton } from '#/components/ui/skeleton'
 import { Textarea } from '#/components/ui/textarea'
 import { getMyCv, saveMyCv } from '#/lib/server-cv'
+import { getMyUsage } from '#/lib/server-stripe'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
@@ -30,6 +32,12 @@ function Dashboard() {
     queryKey: ['masterCv'],
     queryFn: () => getMyCv(),
   })
+
+  const { data: usage } = useQuery({
+    queryKey: ['usage'],
+    queryFn: () => getMyUsage(),
+  })
+
   const mutation = useMutation({
     mutationFn: (newContent: string) =>
       saveMyCv({ data: { content: newContent } }),
@@ -49,10 +57,24 @@ function Dashboard() {
   }, [])
 
   return (
-    <div className="mx-auto max-w-3xl p-8 space-y-6">
-      <h1 className="text-2xl font-display font-semibold">
-        Welcome, {user.name}
-      </h1>
+    <div className="mx-auto max-w-3xl p-4 sm:p-8 space-y-6">
+      <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row items-center justify-between">
+        <h1 className="text-2xl font-display font-semibold">
+          Welcome, {user.name}
+        </h1>
+        {usage ? (
+          usage.plan === 'pro' ? (
+            <Badge>Pro</Badge>
+          ) : (
+            <Badge variant="secondary">
+              {usage.limit - usage.used} of {usage.limit} tailored CVs left
+              today
+            </Badge>
+          )
+        ) : (
+          <Skeleton className="h-5 w-44" />
+        )}
+      </div>
       <p className="text-muted-foreground">
         Your master CV is used to tailor applications.
       </p>

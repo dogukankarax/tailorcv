@@ -48,7 +48,7 @@ function RouteComponent() {
   })
 
   return (
-    <div className="mx-auto max-w-2xl p-8 space-y-4">
+    <div className="mx-auto max-w-2xl p-4 sm:p-8 space-y-4">
       {isLoading ? (
         <Card>
           <CardHeader>
@@ -64,7 +64,7 @@ function RouteComponent() {
         <p className="text-muted-foreground">Not found</p>
       ) : (
         <>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <h1 className="font-display text-3xl font-bold">{data.jobTitle}</h1>
             <Badge>Match Score: {data.matchScore}/100</Badge>
           </div>

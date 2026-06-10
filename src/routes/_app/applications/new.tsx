@@ -11,7 +11,7 @@ import { Label } from '#/components/ui/label'
 import { Textarea } from '#/components/ui/textarea'
 
 import { createApplication } from '#/lib/server-ai'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
@@ -21,6 +21,7 @@ export const Route = createFileRoute('/_app/applications/new')({
 
 function New() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const mutation = useMutation({
     mutationFn: (input: {
@@ -30,6 +31,7 @@ function New() {
     }) => createApplication({ data: input }),
     onSuccess: (result) => {
       navigate({ to: '/applications/$id', params: { id: result.id } })
+      queryClient.invalidateQueries({ queryKey: ['usage'] })
     },
   })
 
@@ -38,12 +40,12 @@ function New() {
   const [jobDescription, setJobDescription] = useState('')
 
   return (
-    <div className="mx-auto max-w-2xl p-8 space-y-4">
-      <h1 className="text-3xl font-display font-semibold">New Application</h1>
+    <div className="mx-auto max-w-2xl p-4 sm:p-8 space-y-4">
+      <h1 className="text-3xl font-display font-semibold">New application</h1>
       <Card>
         <CardHeader>
           <CardDescription>
-            Paste a job posting and we'll tailor your CV to it.
+            Paste the job post. TailorCV will compare it with your master CV.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -78,7 +80,7 @@ function New() {
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               rows={10}
-              placeholder="Paste the job description here..."
+              placeholder="Paste the job post here..."
             />
           </div>
         </CardContent>
@@ -92,7 +94,7 @@ function New() {
             }
             disabled={mutation.isPending}
           >
-            {mutation.isPending ? 'Tailoring...' : 'Tailor my CV'}
+            {mutation.isPending ? 'Tailoring...' : 'Create tailored CV'}
           </Button>
         </CardFooter>
       </Card>

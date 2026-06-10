@@ -11,6 +11,7 @@ const required = (key: string) => {
 export const env = {
   DATABASE_URL: required('DATABASE_URL'),
   BETTER_AUTH_URL: required('BETTER_AUTH_URL'),
+  BETTER_AUTH_SECRET: required('BETTER_AUTH_SECRET'),
   GEMINI_API_KEY: required('GEMINI_API_KEY'),
   STRIPE_SECRET_KEY: required('STRIPE_SECRET_KEY'),
   STRIPE_PRICE_ID: required('STRIPE_PRICE_ID'),

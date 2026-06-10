@@ -27,6 +27,8 @@ const aiOutputSchema = z.object({
   coverLetter: z.string().min(1),
 })
 
+export const DAILY_LIMIT = 3
+
 // Schema passed to the Gemini SDK (OpenAPI-style with Type enum)
 const geminiResponseSchema = {
   type: Type.OBJECT,
@@ -98,8 +100,6 @@ export const createApplication = createServerFn({ method: 'POST' })
     if (!cv) throw new Error('Please set up your master CV first')
 
     if (dbUser?.plan !== 'pro') {
-      const DAILY_LIMIT = 3
-
       const todayStart = new Date()
       todayStart.setHours(0, 0, 0, 0)
 

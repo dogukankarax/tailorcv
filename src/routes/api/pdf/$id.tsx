@@ -42,10 +42,12 @@ export const Route = createFileRoute('/api/pdf/$id')({
           />,
         )
 
+        const name = safeFilename(row.company) || 'application'
+
         return new Response(Uint8Array.from(buffer), {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename="cv-${safeFilename(row.company)}.pdf"`,
+            'Content-Disposition': `attachment; filename="cv-${name}.pdf"`,
           },
         })
       },

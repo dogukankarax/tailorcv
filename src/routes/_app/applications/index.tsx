@@ -24,11 +24,11 @@ function RouteComponent() {
     queryFn: () => getMyApplications(),
   })
   return (
-    <div className="mx-auto max-w-2xl p-8 space-y-4">
+    <div className="mx-auto max-w-2xl p-4 sm:p-8 space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-display font-semibold">Applications</h1>
         <Button asChild>
-          <Link to="/applications/new">New Application</Link>
+          <Link to="/applications/new">New application</Link>
         </Button>
       </div>
       {isLoading ? (
@@ -46,7 +46,7 @@ function RouteComponent() {
         <p className="text-muted-foreground">
           No applications yet.{' '}
           <Link to="/applications/new" className="underline">
-            Create one
+            Create your first one
           </Link>
         </p>
       ) : (
